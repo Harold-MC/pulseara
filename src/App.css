@@ -1,0 +1,12 @@
+body {
+  background-color: rgb(238, 243, 241);
+}
+
+.text-input {
+  border: 1.5px #c6cbcb solid;
+  background-color: #f6f9fa;
+}
+
+.form-title {
+  color: #3e61ad !important;
+}
