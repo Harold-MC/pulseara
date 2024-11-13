@@ -14,7 +14,7 @@ function App() {
 
   const { data, refetch } = useProcedures();
 
-  const saveProcedures = useSaveProcedures(data);
+  const { saveProcedures, isLoading } = useSaveProcedures(data);
 
   const showModal = () => {
     setShowForm(true);
@@ -41,6 +41,7 @@ function App() {
             procedures={data}
             onSave={handleSubmit}
             onCancel={onCancel}
+            isLoading={isLoading}
           />
         </Modal>
       )}
