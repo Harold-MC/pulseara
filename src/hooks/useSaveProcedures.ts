@@ -10,11 +10,14 @@ import IProcedure from "../models/IProcedure";
 // y que el resolver se encargue de procesarla. Comenze a configurar un lambda function para dicho objetivo, pero debido algunos
 // contratiempos de configuracion de la lambda y el limite de tiempo para la prueba, decidi completar temporalmente de esta forma.
 export const useSaveProcedures = (originalList: IProcedure[]) => {
-  const [createProcedure] = useMutation(CREATE_PROCEDURE);
-  const [updateProcedure] = useMutation(UPDATE_PROCEDURE);
-  const [deleteProcedure] = useMutation(DELETE_PROCEDURE);
+  const [createProcedure, { loading: createLoading }] =
+    useMutation(CREATE_PROCEDURE);
+  const [updateProcedure, { loading: updateLoading }] =
+    useMutation(UPDATE_PROCEDURE);
+  const [deleteProcedure, { loading: deleteLoading }] =
+    useMutation(DELETE_PROCEDURE);
 
-  return async (modifiedList: Partial<IProcedure>[]) => {
+  const saveProcedures = async (modifiedList: Partial<IProcedure>[]) => {
     const getChanges = () => {
       const newProcedures = modifiedList.filter(
         (modifiedItem) =>
@@ -67,5 +70,10 @@ export const useSaveProcedures = (originalList: IProcedure[]) => {
     } catch (error) {
       console.error("Error guardando los procedimientos", error);
     }
+  };
+
+  return {
+    saveProcedures,
+    isLoading: createLoading || updateLoading || deleteLoading,
   };
 };

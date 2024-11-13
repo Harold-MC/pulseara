@@ -1,27 +1,34 @@
 import React, { FC } from "react";
-import { Form, Input, Button, InputNumber, Row, Col, Typography } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  InputNumber,
+  Row,
+  Col,
+  Typography,
+  Space,
+  Grid,
+} from "antd";
 import { DeleteOutlined, CheckOutlined, PlusOutlined } from "@ant-design/icons";
 import IProcedure from "../models/IProcedure";
 import useFieldArray from "../hooks/useFieldArray";
 
 const { Title, Text } = Typography;
+const { useBreakpoint } = Grid;
 
 type IProps = {
   procedures: IProcedure[];
   onSave: (procedures: Partial<IProcedure>[]) => void;
   onCancel: () => void;
+  isLoading: boolean;
 };
 
 const Header: FC<{ onAdd: () => void }> = ({ onAdd }) => {
+  const screens = useBreakpoint();
+
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 5,
-        marginBottom: 20,
-      }}
-    >
+    <Space direction={screens.xs ? "vertical" : "horizontal"} size="small">
       <Title level={2} style={{ margin: 0 }} className="form-title">
         Procedimientos
       </Title>
@@ -33,11 +40,18 @@ const Header: FC<{ onAdd: () => void }> = ({ onAdd }) => {
       >
         Añadir procedimiento
       </Button>
-    </div>
+    </Space>
   );
 };
 
-const ProcedureForm: React.FC<IProps> = ({ procedures, onSave, onCancel }) => {
+const ProcedureForm: React.FC<IProps> = ({
+  procedures,
+  onSave,
+  onCancel,
+  isLoading,
+}) => {
+  const screens = useBreakpoint();
+
   const { fields, append, remove, update } =
     useFieldArray<Partial<IProcedure>>(procedures);
 
@@ -63,7 +77,7 @@ const ProcedureForm: React.FC<IProps> = ({ procedures, onSave, onCancel }) => {
   };
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <Header onAdd={handleAdd} />
       {fields.length === 0 && <Text>No hay procedimientos agregados.</Text>}
       <Form onFinish={save} layout="vertical">
@@ -78,13 +92,21 @@ const ProcedureForm: React.FC<IProps> = ({ procedures, onSave, onCancel }) => {
             }}
           >
             <div
-              style={{ display: "flex", alignItems: "center", width: "100%" }}
+              style={{
+                display: "flex",
+                alignItems: screens.xs ? "flex-start" : "center",
+                width: "100%",
+              }}
             >
               <Button
                 type="text"
                 icon={<DeleteOutlined />}
                 onClick={() => handleRemove(index)}
-                style={{ marginRight: "16px", color: "gray" }}
+                style={{
+                  marginRight: "16px",
+                  marginTop: screens.xs ? 30 : 0,
+                  color: "gray",
+                }}
               />
               <Row gutter={[16, 16]} style={{ flex: 1, width: "100%" }}>
                 <Col xs={24} md={5}>
@@ -95,7 +117,7 @@ const ProcedureForm: React.FC<IProps> = ({ procedures, onSave, onCancel }) => {
                       onChange={(e) =>
                         handleChange(index, "name", e.target.value)
                       }
-                      placeholder="Ej: "
+                      placeholder="Ej: 4563523"
                     />
                   </Form.Item>
                 </Col>
@@ -107,7 +129,7 @@ const ProcedureForm: React.FC<IProps> = ({ procedures, onSave, onCancel }) => {
                       onChange={(value) =>
                         handleChange(index, "code", value || 0)
                       }
-                      placeholder="Código"
+                      placeholder="Ej: 4563523"
                       style={{ width: "100%" }}
                     />
                   </Form.Item>
@@ -120,7 +142,7 @@ const ProcedureForm: React.FC<IProps> = ({ procedures, onSave, onCancel }) => {
                       onChange={(value) =>
                         handleChange(index, "reclaimed", value || 0)
                       }
-                      placeholder="Reclamado RD$"
+                      placeholder="Ej: 4563523"
                       style={{ width: "100%" }}
                     />
                   </Form.Item>
@@ -133,7 +155,7 @@ const ProcedureForm: React.FC<IProps> = ({ procedures, onSave, onCancel }) => {
                       onChange={(value) =>
                         handleChange(index, "difference", value || 0)
                       }
-                      placeholder="Diferencia RD$"
+                      placeholder="Ej: 4563523"
                       style={{ width: "100%" }}
                     />
                   </Form.Item>
@@ -146,7 +168,7 @@ const ProcedureForm: React.FC<IProps> = ({ procedures, onSave, onCancel }) => {
                       onChange={(value) =>
                         handleChange(index, "authorized", value || 0)
                       }
-                      placeholder="Autorizado RD$"
+                      placeholder="Ej: 4563523"
                       style={{ width: "100%" }}
                     />
                   </Form.Item>
@@ -168,7 +190,9 @@ const ProcedureForm: React.FC<IProps> = ({ procedures, onSave, onCancel }) => {
             type="primary"
             htmlType="submit"
             icon={<CheckOutlined />}
-            disabled={fields.length === 0 && procedures.length === 0}
+            disabled={
+              (fields.length === 0 && procedures.length === 0) || isLoading
+            }
           >
             Guardar Cambios
           </Button>
